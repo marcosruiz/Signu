@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ImageView
+        android:id="@+id/image_pdf"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_column="0"
+        android:layout_margin="10dp"
+        android:layout_row="1"
+        android:layout_toEndOf="@+id/is_pdf_checked"
+        android:layout_toRightOf="@+id/is_pdf_checked"
+        android:adjustViewBounds="false"
+        app:srcCompat="@mipmap/ic_launcher_round" />
+
+    <TextView
+        android:id="@+id/text_name_pdf"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_column="1"
+        android:layout_row="1"
+        android:layout_weight="0.93"
+        android:text="TextView"
+        android:textSize="20sp"
+        android:layout_alignTop="@+id/image_pdf"
+        android:layout_toRightOf="@+id/image_pdf"
+        android:layout_toEndOf="@+id/image_pdf" />
+
+    <TextView
+        android:id="@+id/text_size_pdf"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_column="1"
+        android:layout_row="1"
+        android:text="TextView"
+        android:textSize="15sp"
+        android:layout_below="@+id/text_name_pdf"
+        android:layout_toRightOf="@+id/image_pdf"
+        android:layout_toEndOf="@+id/image_pdf" />
+
+    <CheckBox
+        android:id="@+id/is_pdf_checked"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/image_pdf"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignTop="@+id/image_pdf"
+        android:layout_column="16"
+        android:layout_row="1" />
+
+</RelativeLayout>
