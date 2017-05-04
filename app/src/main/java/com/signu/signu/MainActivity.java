@@ -1,28 +1,41 @@
 package com.signu.signu;
 
+import android.app.DialogFragment;
+import android.app.Fragment;
+import android.app.FragmentTransaction;
+import android.content.Context;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
     private static final String LOG = "MAIN ACTIVITY LOG";
     ArrayList<File> pdfList = new ArrayList<>();
     int pdf_image_default = R.drawable.ic_description_black_48dp;
+    private static Context context;
+    Button buttonImport;
+    Button buttonExport;
+    FileChooserDialogFragment fcd;
 
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        context = getApplicationContext();
+
         setContentView(R.layout.activity_main);
         System.out.println("Apk starts");
         // PDF List
@@ -41,6 +54,32 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         }
+
+        //Buttons import and export
+        buttonExport = (Button) findViewById(R.id.export_pdf_button);
+        buttonImport = (Button) findViewById(R.id.import_pdf_button);
+
+        buttonImport.setOnClickListener(new View.OnClickListener(){
+
+            @Override
+            public void onClick(View v) {
+                showDialog();
+            }
+        });
+
+    }
+
+    public void showDialog(){
+        FragmentTransaction ft = getFragmentManager().beginTransaction();
+        Fragment prev = getFragmentManager().findFragmentByTag("dialog");
+        if (prev != null) {
+            ft.remove(prev);
+        }
+        ft.addToBackStack(null);
+        // Create and show the dialog.
+        DialogFragment newFragment = FileChooserDialogFragment.newInstance(
+                R.string.app_name);
+        newFragment.show(getFragmentManager(), "dialog");
     }
 
     public boolean isPdf(File f){
@@ -82,5 +121,9 @@ public class MainActivity extends AppCompatActivity {
             textSize.setText((pdfList.get(position).length()/1000) + " KB");
             return convertView;
         }
+    }
+
+    public static Context getAppContext(){
+        return context;
     }
 }

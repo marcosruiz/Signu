@@ -3,9 +3,18 @@ package com.signu.signu;
 import android.content.Context;
 import android.os.Environment;
 import android.os.storage.StorageManager;
+import android.provider.MediaStore;
 import android.util.Log;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+
+import static junit.framework.Assert.assertTrue;
 
 /**
  * Created by Marcos on 03/05/2017.
@@ -46,8 +55,32 @@ public class PdfManager {
      * @return
      */
     public File getDownladsStorageDir() {
-        // Get the directory for the user's public pictures directory.
-        return Environment.getExternalStoragePublicDirectory(
-                Environment.DIRECTORY_DOWNLOADS);
+        return getStorageDir(Environment.DIRECTORY_DOWNLOADS);
     }
+
+    public File getStorageDir(String folder){
+        assertTrue(isExternalStorageReadable());
+        return Environment.getExternalStoragePublicDirectory(folder);
+    }
+
+    public void saveOnExternalStorage(File internalFile) throws IOException {
+        assertTrue(isExternalStorageWritable());
+        File externalFile = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), internalFile.getName());
+        copy(internalFile, externalFile);
+    }
+
+    public void copy(File src, File dst) throws IOException {
+        InputStream in = new FileInputStream(src);
+        OutputStream out = new FileOutputStream(dst);
+
+        // Transfer bytes from in to out
+        byte[] buf = new byte[1024];
+        int len;
+        while ((len = in.read(buf)) > 0) {
+            out.write(buf, 0, len);
+        }
+        in.close();
+        out.close();
+    }
+
 }
