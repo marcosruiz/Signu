@@ -5,8 +5,9 @@ import android.os.Environment;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.runner.AndroidJUnit4;
 
+import com.signu.signu.model.PdfManager;
+
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -43,7 +44,7 @@ public class ExampleInstrumentedTest {
     public void savePdfTest() throws Exception {
         // Create file in the internal storage
         File fTemp = File.createTempFile("out",".txt");
-        PdfManager pdfManager = new PdfManager();
+        PdfManager pdfManager = new PdfManager(appContext);
 
         pdfManager.saveOnExternalStorage(fTemp);
         // Check if the new file is saved

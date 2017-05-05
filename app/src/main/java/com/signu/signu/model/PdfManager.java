@@ -1,10 +1,12 @@
-package com.signu.signu;
+package com.signu.signu.model;
 
 import android.content.Context;
 import android.os.Environment;
 import android.os.storage.StorageManager;
 import android.provider.MediaStore;
 import android.util.Log;
+
+import com.signu.signu.ui.MainActivity;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -23,6 +25,21 @@ import static junit.framework.Assert.assertTrue;
 public class PdfManager {
 
     private static final String LOG_TAG = "PDF MANAGER LOG";
+    private static final String PDF_DIR = "Pdfs";
+    private static final String CERT_DIR = "Certificates";
+    private File pdfDir;
+    private File certDir;
+    private File rootAppDir;
+    private Context context;
+
+    public PdfManager(Context context){
+        this.context = context;
+        rootAppDir = context.getFilesDir();
+        pdfDir = new File(rootAppDir , PDF_DIR);
+        certDir = new File(rootAppDir , CERT_DIR);
+        pdfDir.mkdir();
+        certDir.mkdir();
+    }
 
     /* Checks if external storage is available for read and write */
     public boolean isExternalStorageWritable() {
@@ -47,15 +64,16 @@ public class PdfManager {
         return new File(Environment.getExternalStorageDirectory().getAbsolutePath(), filename);
     }
 
-    public void trying(){
-    }
-
     /**
      * Devuelve una instancia de File que reresenta el directorio correspondiente dentro de Downloads
      * @return
      */
     public File getDownladsStorageDir() {
         return getStorageDir(Environment.DIRECTORY_DOWNLOADS);
+    }
+
+    public File getPDFDir(){
+        return pdfDir;
     }
 
     public File getStorageDir(String folder){
@@ -69,7 +87,13 @@ public class PdfManager {
         copy(internalFile, externalFile);
     }
 
-    public void copy(File src, File dst) throws IOException {
+    public void saveOnInternalStorage(File externalFile) throws IOException {
+        assertTrue(isExternalStorageReadable());
+        File internalFile = new File(pdfDir, externalFile.getName());
+        copy(externalFile, internalFile);
+    }
+
+    private void copy(File src, File dst) throws IOException {
         InputStream in = new FileInputStream(src);
         OutputStream out = new FileOutputStream(dst);
 
@@ -82,5 +106,11 @@ public class PdfManager {
         in.close();
         out.close();
     }
+
+    public void deleteFile(File f){
+        f.delete();
+    }
+
+
 
 }
