@@ -13,7 +13,17 @@
         android:layout_weight="1"
         android:text="Export PDF"
         tools:layout_editor_absoluteX="207dp"
-        tools:layout_editor_absoluteY="384dp" />
+        tools:layout_editor_absoluteY="384dp"
+        android:visibility="invisible"/>
+
+    <Button
+        android:id="@+id/delete_pdf_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Delete PDF"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:visibility="invisible"/>
 
     <Button
         android:id="@+id/import_pdf_button"
@@ -28,7 +38,7 @@
         android:layout_alignParentEnd="true" />
 
     <ListView
-        android:id="@+id/list"
+        android:id="@+id/pdf_list"
         android:layout_width="360dp"
         android:layout_height="495dp"
         tools:layout_editor_absoluteX="8dp"

@@ -5,12 +5,12 @@
     android:layout_height="match_parent"
     android:orientation="horizontal" >
 
-
     <CheckBox
-        android:id="@+id/checkbox"
+        android:id="@+id/checkbox_pdf"
         style="@style/Widget.AppCompat.CompoundButton.CheckBox"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent" />
+        android:layout_width="30dp"
+        android:layout_height="match_parent"
+        android:visibility="invisible" />
 
     <ImageView
         android:id="@+id/image_pdf"
@@ -28,7 +28,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:textAppearance="?attr/textAppearanceListItem" />
+            android:textAppearance="?attr/textAppearanceListItem"/>
 
         <TextView
             android:id="@+id/text_size_pdf"
@@ -36,9 +36,12 @@
             android:layout_height="wrap_content"
             android:layout_alignLeft="@+id/text_name_pdf"
             android:layout_alignStart="@+id/text_name_pdf"
-            android:layout_below="@+id/text_name_pdf" />
+            android:layout_below="@+id/text_name_pdf"
+            />
 
 
     </LinearLayout>
+
+
 
 </LinearLayout>

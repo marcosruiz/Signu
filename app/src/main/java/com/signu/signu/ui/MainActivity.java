@@ -30,11 +30,12 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity {
     private static final String LOG_TAG = "MAIN ACTIVITY LOG";
     ArrayList<File> fileList = new ArrayList<>();
-    ArrayList<PDFFile> pdfFileList = new ArrayList<>();
-    int pdf_image_default = R.drawable.ic_description_black_48dp;
+    ArrayList<Boolean> isSelected = new ArrayList<>();
+
     private static Context context;
     Button buttonImport;
     Button buttonExport;
+    Button buttonDelete;
     FileChooserDialogFragment fcd;
     PdfManager pdfManager;
     Snackbar snackbar;
@@ -47,28 +48,38 @@ public class MainActivity extends AppCompatActivity {
 
         context = getApplicationContext();
 
-        setContentView(R.layout.activity_main);
-        System.out.println("Apk starts");
-        // PDF List
-        listView = (ListView) findViewById(R.id.list);
-        MyAdapter myAdapter= new MyAdapter(this, R.layout.activity_main, pdfFileList);
-        listView.setAdapter(myAdapter);
         // PDF Files
         pdfManager = new PdfManager(getAppContext());
-        File downloadsDir = pdfManager.getPDFDir();
+        File pdfDir = pdfManager.getPDFDir();
 
-        if(downloadsDir.isDirectory()){
-            for (File f : downloadsDir.listFiles()){
+        if(pdfDir.isDirectory()){
+            for (File f : pdfDir.listFiles()){
                 if(isPdf(f)){
                     fileList.add(f);
+                    isSelected.add(false);
                     Log.e(LOG_TAG, "File found " + f.getName());
                 }
             }
         }
 
+        setContentView(R.layout.activity_main);
+        System.out.println("Apk starts");
+        // PDF List
+        listView = (ListView) findViewById(R.id.pdf_list);
+
+        MyAdapterView myAdapterView = new MyAdapterView(this, fileList);
+        listView.setOnItemClickListener(myAdapterView);
+        listView.setOnItemLongClickListener(myAdapterView);
+
+        MyArrayAdapter myArrayAdapter= new MyArrayAdapter(this, R.layout.activity_main, fileList);
+        listView.setAdapter(myArrayAdapter);
+
+
+
         //Buttons import and export
         buttonExport = (Button) findViewById(R.id.export_pdf_button);
         buttonImport = (Button) findViewById(R.id.import_pdf_button);
+        buttonDelete = (Button) findViewById(R.id.delete_pdf_button);
 
         buttonImport.setOnClickListener(new View.OnClickListener(){
 
@@ -108,7 +119,7 @@ public class MainActivity extends AppCompatActivity {
         try {
             pdfManager.saveOnInternalStorage(f);
             fileList.add(f);
-
+            isSelected.add(false);
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -129,64 +140,21 @@ public class MainActivity extends AppCompatActivity {
             e.printStackTrace();
             Toast.makeText(MainActivity.getAppContext() , f.getName() + " NOT exported", Toast.LENGTH_SHORT).show();
         }
+        getLayoutInflater();
 
-    }
-
-    class MyAdapter extends ArrayAdapter<PDFFile> implements View.OnClickListener{
-
-        public MyAdapter(@NonNull Context context, @LayoutRes int resource, @NonNull List<PDFFile> objects) {
-            super(context, resource, objects);
-        }
-
-        @Override
-        public int getCount() {
-            return fileList.size();
-        }
-
-        @Override
-        public PDFFile getItem(int position) {
-            return pdfFileList.get(position);
-        }
-
-        @Override
-        public long getItemId(int position) {
-            return 0;
-        }
-
-        @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
-            convertView = getLayoutInflater().inflate(R.layout.pdf_list_item, null);
-
-            ImageView imagePdf = (ImageView)convertView.findViewById(R.id.image_pdf);
-            TextView textName = (TextView) convertView.findViewById(R.id.text_name_pdf);
-            TextView textSize = (TextView) convertView.findViewById(R.id.text_size_pdf);
-            CheckBox checkBox = (CheckBox) convertView.findViewById(R.id.checkbox);
-
-            imagePdf.setImageResource(pdf_image_default);
-            textName.setText(fileList.get(position).getName());
-            textSize.setText((fileList.get(position).length()/1000) + " KB");
-
-            return convertView;
-        }
-
-        @Override
-        public void onClick(View v) {
-            Log.e(LOG_TAG, "Enter to onClick");
-            v.findViewById(R.id.text_name_pdf);
-            CheckBox checkBox = (CheckBox) v.findViewById(R.id.checkbox);
-            if(!checkBox.isSelected()){
-                Log.e(LOG_TAG, "Checkbox selected");
-                checkBox.setSelected(true);
-                //TODO Dejar indicado que se ha seleccionado que ha sido seleccionado
-
-            }else{
-                Log.e(LOG_TAG, "Checkbox desselected");
-                checkBox.setSelected(false);
-            }
-        }
     }
 
     public static Context getAppContext(){
         return context;
+    }
+
+    public void enableButtons(){
+        buttonImport.setVisibility(View.VISIBLE);
+        buttonDelete.setVisibility(View.VISIBLE);
+    }
+
+    public void disableButtons(){
+        buttonImport.setVisibility(View.INVISIBLE);
+        buttonDelete.setVisibility(View.INVISIBLE);
     }
 }
