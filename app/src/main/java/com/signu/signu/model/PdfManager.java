@@ -83,6 +83,10 @@ public class PdfManager {
 
     public void saveOnExternalStorage(File internalFile) throws IOException {
         assertTrue(isExternalStorageWritable());
+        File documents = new File(Environment.DIRECTORY_DOWNLOADS);
+        if(!documents.exists()){
+            documents.mkdir();
+        }
         File externalFile = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), internalFile.getName());
         copy(internalFile, externalFile);
     }

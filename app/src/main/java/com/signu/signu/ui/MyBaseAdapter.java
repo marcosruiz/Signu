@@ -113,7 +113,7 @@ class MyBaseAdapter extends BaseAdapter implements AdapterView.OnItemClickListen
                 if(selectedFiles == 0) {
                     Log.e(LOG_TAG, "Dissapear checkboxes");
                     showCheckBoxes = false;
-
+                    ((MainActivity)context).disableButtons();
                 }
             } else{
                 // Select
@@ -141,8 +141,15 @@ class MyBaseAdapter extends BaseAdapter implements AdapterView.OnItemClickListen
 
             showCheckBoxes = true;
             this.notifyDataSetChanged();
+
+            // Show buttons
+            ((MainActivity)context).enableButtons();
         }
 
         return true;
+    }
+
+    public void setCheckBoxes(boolean checkBoxes) {
+        this.showCheckBoxes = checkBoxes;
     }
 }

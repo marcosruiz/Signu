@@ -31,6 +31,8 @@ public class MainActivity extends AppCompatActivity {
     Snackbar snackbar;
     ListView listView;
 
+    MyBaseAdapter myBaseAdapter;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,7 +45,8 @@ public class MainActivity extends AppCompatActivity {
         System.out.println("Apk starts");
         // PDF List
         listView = (ListView) findViewById(R.id.pdf_list);
-        MyBaseAdapter myBaseAdapter= new MyBaseAdapter(this, fileList);
+
+        myBaseAdapter = new MyBaseAdapter(this, fileList);
         listView.setOnItemClickListener(myBaseAdapter);
         listView.setOnItemLongClickListener(myBaseAdapter);
         listView.setAdapter(myBaseAdapter);
@@ -65,7 +68,34 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onClick(View v) {
-                // TODO pdfManager.saveOnExternalStorage();
+                for(PDFFile f : fileList){
+                    if(f.isChecked()){
+                        exportResult(f);
+                    }
+                }
+                myBaseAdapter.setCheckBoxes(false);
+                disableButtons();
+                myBaseAdapter.notifyDataSetChanged();
+            }
+        });
+
+        buttonDelete.setOnClickListener(new View.OnClickListener(){
+
+            @Override
+            public void onClick(View v) {
+                ArrayList<PDFFile> toDelete = new ArrayList<PDFFile>();
+                for(PDFFile f : fileList){
+                    if(f.isChecked()){
+                        toDelete.add(f);
+                    }
+                }
+                for(PDFFile f : toDelete){
+                    fileList.remove(f);
+                    pdfManager.deleteFile(f);
+                }
+                myBaseAdapter.setCheckBoxes(false);
+                myBaseAdapter.notifyDataSetChanged();
+                disableButtons();
             }
         });
 
@@ -84,6 +114,8 @@ public class MainActivity extends AppCompatActivity {
         }
 
     }
+
+
 
     public void showDialog(){
         DialogFragment newFragment = FileChooserDialogFragment.newInstance();
@@ -106,10 +138,10 @@ public class MainActivity extends AppCompatActivity {
             pdfManager.saveOnInternalStorage(f);
             PDFFile pdfFile = new PDFFile(f);
             fileList.add(pdfFile);
+            myBaseAdapter.notifyDataSetChanged();
 
         } catch (IOException e) {
             e.printStackTrace();
-            //Toast.makeText(MainActivity.getAppContext() , f.getName() + " NOT imported", Toast.LENGTH_SHORT).show();
         }
 
 
@@ -120,15 +152,13 @@ public class MainActivity extends AppCompatActivity {
         // Export pdf
         try {
             pdfManager.saveOnExternalStorage(f);
-            PDFFile pdfFile = new PDFFile(f);
-            fileList.add(pdfFile);
+
             Toast.makeText(MainActivity.getAppContext() , f.getName() + " exported", Toast.LENGTH_SHORT).show();
         } catch (IOException e) {
             e.printStackTrace();
             Toast.makeText(MainActivity.getAppContext() , f.getName() + " NOT exported", Toast.LENGTH_SHORT).show();
         }
         getLayoutInflater();
-
     }
 
     public static Context getAppContext(){
@@ -136,12 +166,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void enableButtons(){
-        buttonImport.setVisibility(View.VISIBLE);
+        buttonExport.setVisibility(View.VISIBLE);
         buttonDelete.setVisibility(View.VISIBLE);
     }
 
     public void disableButtons(){
-        buttonImport.setVisibility(View.INVISIBLE);
+        buttonExport.setVisibility(View.INVISIBLE);
         buttonDelete.setVisibility(View.INVISIBLE);
     }
 }
