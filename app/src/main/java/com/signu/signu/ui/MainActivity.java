@@ -3,34 +3,24 @@ package com.signu.signu.ui;
 import android.app.DialogFragment;
 import android.content.Context;
 import android.os.Bundle;
-import android.support.annotation.LayoutRes;
-import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.CheckBox;
-import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.Toast;
 import android.support.design.widget.Snackbar;
 
 import com.signu.signu.R;
-import com.signu.signu.model.PDFFile;
 import com.signu.signu.model.PdfManager;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
     private static final String LOG_TAG = "MAIN ACTIVITY LOG";
-    ArrayList<File> fileList = new ArrayList<>();
-    ArrayList<Boolean> isSelected = new ArrayList<>();
+    ArrayList<PDFFile> fileList = new ArrayList<>();
 
     private static Context context;
     Button buttonImport;
@@ -48,33 +38,15 @@ public class MainActivity extends AppCompatActivity {
 
         context = getApplicationContext();
 
-        // PDF Files
-        pdfManager = new PdfManager(getAppContext());
-        File pdfDir = pdfManager.getPDFDir();
-
-        if(pdfDir.isDirectory()){
-            for (File f : pdfDir.listFiles()){
-                if(isPdf(f)){
-                    fileList.add(f);
-                    isSelected.add(false);
-                    Log.e(LOG_TAG, "File found " + f.getName());
-                }
-            }
-        }
 
         setContentView(R.layout.activity_main);
         System.out.println("Apk starts");
         // PDF List
         listView = (ListView) findViewById(R.id.pdf_list);
-
-        MyAdapterView myAdapterView = new MyAdapterView(this, fileList);
-        listView.setOnItemClickListener(myAdapterView);
-        listView.setOnItemLongClickListener(myAdapterView);
-
-        MyArrayAdapter myArrayAdapter= new MyArrayAdapter(this, R.layout.activity_main, fileList);
-        listView.setAdapter(myArrayAdapter);
-
-
+        MyBaseAdapter myBaseAdapter= new MyBaseAdapter(this, fileList);
+        listView.setOnItemClickListener(myBaseAdapter);
+        listView.setOnItemLongClickListener(myBaseAdapter);
+        listView.setAdapter(myBaseAdapter);
 
         //Buttons import and export
         buttonExport = (Button) findViewById(R.id.export_pdf_button);
@@ -97,6 +69,20 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        // PDF Files
+        pdfManager = new PdfManager(getAppContext());
+        File pdfDir = pdfManager.getPDFDir();
+
+        if(pdfDir.isDirectory()){
+            for (File f : pdfDir.listFiles()){
+                if(isPdf(f)){
+                    PDFFile pdfFile = new PDFFile(f);
+                    fileList.add(pdfFile);
+                    Log.e(LOG_TAG, "File found " + f.getName());
+                }
+            }
+        }
+
     }
 
     public void showDialog(){
@@ -118,8 +104,8 @@ public class MainActivity extends AppCompatActivity {
         //Import pdf
         try {
             pdfManager.saveOnInternalStorage(f);
-            fileList.add(f);
-            isSelected.add(false);
+            PDFFile pdfFile = new PDFFile(f);
+            fileList.add(pdfFile);
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -134,7 +120,8 @@ public class MainActivity extends AppCompatActivity {
         // Export pdf
         try {
             pdfManager.saveOnExternalStorage(f);
-            fileList.add(f);
+            PDFFile pdfFile = new PDFFile(f);
+            fileList.add(pdfFile);
             Toast.makeText(MainActivity.getAppContext() , f.getName() + " exported", Toast.LENGTH_SHORT).show();
         } catch (IOException e) {
             e.printStackTrace();
