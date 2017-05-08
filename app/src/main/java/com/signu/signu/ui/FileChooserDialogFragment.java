@@ -84,14 +84,14 @@ public class FileChooserDialogFragment extends DialogFragment {
                     ((MainActivity)getActivity()).importResult(selected);
 
                     Snackbar snackbar = Snackbar
-                            .make(view, "File imported", Snackbar.LENGTH_LONG)
-                            .setAction("UNDO", new View.OnClickListener() {
-                                @Override
-                                public void onClick(View view) {
-                                    Snackbar snackbar1 = Snackbar.make(view, "File unimported", Snackbar.LENGTH_SHORT);
-                                    snackbar1.show();
-                                }
-                            });
+                            .make(view, "File imported", Snackbar.LENGTH_LONG);
+//                            .setAction("UNDO", new View.OnClickListener() {
+//                                @Override
+//                                public void onClick(View view) {
+//                                    Snackbar snackbar1 = Snackbar.make(view, "File unimported", Snackbar.LENGTH_SHORT);
+//                                    snackbar1.show();
+//                                }
+//                            });
                     snackbar.show();
                 }
             }

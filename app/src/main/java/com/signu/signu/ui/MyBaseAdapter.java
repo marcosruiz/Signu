@@ -31,7 +31,7 @@ class MyBaseAdapter extends BaseAdapter implements AdapterView.OnItemClickListen
     private final ArrayList<PDFFile> objects;
     private final Activity activity;
 
-    int selectedFiles;
+    private int selectedFiles;
     private boolean showCheckBoxes;
 
     //Item view
@@ -83,6 +83,7 @@ class MyBaseAdapter extends BaseAdapter implements AdapterView.OnItemClickListen
             checkBox.setVisibility(View.VISIBLE);
             if(objects.get(position).isChecked()){
                 checkBox.setChecked(true);
+                showCheckBoxes = true;
             }else{
                 checkBox.setChecked(false);
             }
@@ -111,7 +112,6 @@ class MyBaseAdapter extends BaseAdapter implements AdapterView.OnItemClickListen
                 objects.get(indexOfPdf).setChecked(false);
                 selectedFiles--;
                 if(selectedFiles == 0) {
-                    Log.e(LOG_TAG, "Dissapear checkboxes");
                     showCheckBoxes = false;
                     ((MainActivity)context).disableButtons();
                 }
@@ -149,7 +149,24 @@ class MyBaseAdapter extends BaseAdapter implements AdapterView.OnItemClickListen
         return true;
     }
 
-    public void setCheckBoxes(boolean checkBoxes) {
+    public void setShowCheckBoxes(boolean checkBoxes) {
         this.showCheckBoxes = checkBoxes;
+    }
+
+    public void setSelectedFiles(int selectedFiles){
+        this.selectedFiles = selectedFiles;
+    }
+    public int getSelectedFiles(){
+        return selectedFiles;
+    }
+
+    public void init(){
+        showCheckBoxes = false;
+        selectedFiles = 0;
+        for(PDFFile pdf : objects){
+            pdf.setChecked(false);
+        }
+        ((MainActivity)context).disableButtons();
+        this.notifyDataSetChanged();
     }
 }

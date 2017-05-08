@@ -73,9 +73,7 @@ public class MainActivity extends AppCompatActivity {
                         exportResult(f);
                     }
                 }
-                myBaseAdapter.setCheckBoxes(false);
-                disableButtons();
-                myBaseAdapter.notifyDataSetChanged();
+                myBaseAdapter.init();
             }
         });
 
@@ -93,16 +91,19 @@ public class MainActivity extends AppCompatActivity {
                     fileList.remove(f);
                     pdfManager.deleteFile(f);
                 }
-                myBaseAdapter.setCheckBoxes(false);
-                myBaseAdapter.notifyDataSetChanged();
-                disableButtons();
+                myBaseAdapter.init();
             }
         });
 
         // PDF Files
         pdfManager = new PdfManager(getAppContext());
-        File pdfDir = pdfManager.getPDFDir();
+        fillFileList();
 
+    }
+
+    public void fillFileList(){
+        File pdfDir = pdfManager.getPDFDir();
+        fileList.clear();
         if(pdfDir.isDirectory()){
             for (File f : pdfDir.listFiles()){
                 if(isPdf(f)){
@@ -112,7 +113,6 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         }
-
     }
 
 
@@ -136,9 +136,8 @@ public class MainActivity extends AppCompatActivity {
         //Import pdf
         try {
             pdfManager.saveOnInternalStorage(f);
-            PDFFile pdfFile = new PDFFile(f);
-            fileList.add(pdfFile);
-            myBaseAdapter.notifyDataSetChanged();
+            fillFileList();
+            myBaseAdapter.init();
 
         } catch (IOException e) {
             e.printStackTrace();
